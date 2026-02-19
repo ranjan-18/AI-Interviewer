@@ -68,7 +68,7 @@ async def next_question(
     history = db.query(question_model.QuestionAnswer).filter(question_model.QuestionAnswer.session_id == session_id).all()
     history_list = [{"question": h.question, "answer": h.answer} for h in history]
 
-    next_q = await orchestrator.generate_response(
+    next_q_data = await orchestrator.generate_response(
         current_round=session.current_round,
         last_question=last_question,
         candidate_answer=user_answer,
@@ -79,6 +79,9 @@ async def next_question(
         items=all_items,
         has_achievements=len(achievements_list) > 0
     )
+    
+    next_q = next_q_data["response"]
+    stage = next_q_data["stage"]
     
     qa = question_model.QuestionAnswer(
         session_id=session_id,
@@ -99,7 +102,7 @@ async def next_question(
     session.current_step += 1
     db.commit()
 
-    return {"question": next_q, "round": session.current_round}
+    return {"question": next_q, "round": session.current_round, "stage": stage}
 
 @router.post("/end")
 async def end_interview(

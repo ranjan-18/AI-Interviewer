@@ -18,10 +18,16 @@ AI Interview Buddy is an elite, autonomous interview simulation platform designe
 *   **Zero-Delay Silence Detection**: A perfectly calibrated **4.0s pause window** allows for natural technical explanations without interruption.
 *   **Heartbeat Mic Control**: Ensures your signal is always active when it's your turn to peak.
 
+### 💻 Advanced Code Terminal
+*   **Multi-Language Support**: Full syntax highlighting and execution simulation for **JavaScript, Python, Java, C++, C, and C#**.
+*   **Integrated Problem Solving**: Seamlessly solve DSA challenges within the interview interface.
+*   **Auto-Open**: Terminal automatically engages during the DSA round for a distraction-free coding experience.
+
 ### ⚖️ High-Fidelity "Bar Raiser" Evaluation
 *   **Brutally Honest Reports**: Zero sugarcoating. Professional, elite-level feedback from a "Senior Staff Engineer" persona.
 *   **Strict Transcript Grounding**: All feedback is 100% derived from actual interview answers. No "fake data" or hallucinations.
-*   **Resume Gap Analysis**: Identifies discrepancies between resume claims and demonstrated technical depth.
+*   **Gap Analysis Protocol**: Detailed comparison of "What You Said" vs "The Ideal Senior Answer" for every question.
+*   **Early Finish Capability**: Flexible exit option that generates a valid partial report based on the interview progress.
 *   **Synthesis HUD**: Displays real-time status during the intensive report-generation phase (Synthesizing -> Finalizing).
 
 ---
@@ -35,7 +41,18 @@ AI Interview Buddy is an elite, autonomous interview simulation platform designe
 
 ---
 
-## � Getting Started
+## 🚀 Deployment (Vercel)
+
+This project is configured for seamless deployment on Vercel.
+
+1.  **Push to GitHub**: Ensure your repository is up-to-date.
+2.  **Import to Vercel**: Connect your GitHub repository to Vercel.
+3.  **Environment Variables**: Add your `GEMINI_API_KEY` (or other LLM keys) in the Vercel Project Settings.
+4.  **Deploy**: Vercel will automatically detect the configuration in `vercel.json` and build both the frontend and backend serverless functions.
+
+---
+
+## 🏁 Getting Started
 
 ### 1. Backend Setup
 ```bash
@@ -71,11 +88,13 @@ AI-Interview-Buddy/
 │   ├── src/
 │   │   ├── pages/       # Immersive React pages (InterviewPage, FeedbackPage)
 │   │   └── services/    # API integration layer
+├── vercel.json          # Deployment configuration
+└── api/                 # Serverless entry point
 ```
 
 ---
 
-## � Security & Privacy
+## 🔒 Security & Privacy
 *   **Encrypted Signal**: Session metadata and transcripts are handled within a secure local environment.
 *   **Screen Wake Lock**: Prevents your display from sleeping during critical technical rounds.
 

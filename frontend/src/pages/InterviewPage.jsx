@@ -4,12 +4,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { startInterview, nextQuestion, endInterview } from '../services/api';
 
+import CodeTerminal from '../components/CodeTerminal';
+
 function InterviewPage() {
     const { resumeId } = useParams();
     const navigate = useNavigate();
 
     const [sessionId, setSessionId] = useState(null);
     const [currentQuestion, setCurrentQuestion] = useState('');
+    const [currentStage, setCurrentStage] = useState('intro'); // Add stage tracking
     const [isListening, setIsListening] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [isAISpeaking, setIsAISpeaking] = useState(false);
@@ -18,6 +21,10 @@ function InterviewPage() {
     const [transcript, setTranscript] = useState([]);
     const [interimTranscript, setInterimTranscript] = useState('');
     const [volume, setVolume] = useState(0);
+
+    // Code Terminal State
+    const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+    const [terminalCode, setTerminalCode] = useState('');
 
     const recognitionRef = useRef(null);
     const finalTranscriptRef = useRef('');
@@ -106,6 +113,18 @@ function InterviewPage() {
         };
     }, []);
 
+    // Auto-open Terminal for DSA Stage
+    useEffect(() => {
+        if (currentStage === 'dsa_tech') {
+            setIsTerminalOpen(false); // Reset first to ensure clean state or animation
+            const timer = setTimeout(() => setIsTerminalOpen(true), 2000); // Delay slightly for video/audio effect
+            return () => clearTimeout(timer);
+        } else {
+            setIsTerminalOpen(false);
+        }
+    }, [currentStage, currentQuestion]);
+
+
     const setupVisualizer = async () => {
         try {
             if (!audioContextRef.current) {
@@ -163,12 +182,12 @@ function InterviewPage() {
     // HEARTBEAT: Ensure microphone stays active when it's the user's turn
     useEffect(() => {
         const heartbeat = setInterval(() => {
-            if (!isInitializing && isUserTurn && !isListening && !isAISpeaking && !isProcessing) {
+            if (!isInitializing && isUserTurn && !isListening && !isAISpeaking && !isProcessing && !isTerminalOpen) {
                 startListening();
             }
         }, 1500);
         return () => clearInterval(heartbeat);
-    }, [isInitializing, isUserTurn, isListening, isAISpeaking, isProcessing]);
+    }, [isInitializing, isUserTurn, isListening, isAISpeaking, isProcessing, isTerminalOpen]);
 
     const playAIResponse = (text) => {
         if (!text) return;
@@ -187,13 +206,13 @@ function InterviewPage() {
         utterance.onend = () => {
             setIsAISpeaking(false);
             setIsUserTurn(true);
-            startListening();
+            if (!isTerminalOpen) startListening();
         };
         window.speechSynthesis.speak(utterance);
     };
 
     const startListening = async () => {
-        if (isAISpeaking || isProcessing || isListening || !isUserTurn) return;
+        if (isAISpeaking || isProcessing || isListening || !isUserTurn || isTerminalOpen) return;
         try {
             await setupVisualizer();
             if (recognitionRef.current) recognitionRef.current.start();
@@ -216,8 +235,12 @@ function InterviewPage() {
                 setTranscript(prev => [...prev, { sender: 'AI', text: data.question }]);
                 playAIResponse(data.question);
 
+                if (data.stage) setCurrentStage(data.stage); // Update stage from backend
+
                 if (data.round === 'completed') {
                     setIsInterviewCompleted(true);
+                    // Auto-trigger report generation
+                    setTimeout(() => handleEndInterview(true), 2000); // Small delay for effect
                 }
             }
         } catch (err) {
@@ -234,8 +257,8 @@ function InterviewPage() {
 
     const [endSessionStage, setEndSessionStage] = useState('');
 
-    const handleEndInterview = async () => {
-        if (window.confirm("End session and generate high-fidelity technical report?")) {
+    const handleEndInterview = async (autoTrigger = false) => {
+        if (autoTrigger || isInterviewCompleted || window.confirm("Are you sure you want to end the interview early? A performance report will be generated based on your answers so far.")) {
             setIsProcessing(true);
             setEndSessionStage('synthesizing');
             try {
@@ -243,10 +266,18 @@ function InterviewPage() {
                 setEndSessionStage('finalizing');
                 navigate(`/feedback/${sessionId}`);
             } catch (err) {
+                console.error("End interview failed:", err);
+                alert(`Failed to generate report: ${err.message || "Unknown error"}. Please check console.`);
                 setIsProcessing(false);
                 setEndSessionStage('');
             }
         }
+    };
+
+    const handleCodeSubmit = (code) => {
+        setTerminalCode(code);
+        // Treat code submission as an answer
+        processUserAnswer(`I have submitted the following code:\n${code}`);
     };
 
     useEffect(() => {
@@ -255,6 +286,8 @@ function InterviewPage() {
 
     return (
         <div className="min-h-screen bg-[#020617] text-white flex flex-col font-sans antialiased overflow-hidden">
+
+
 
             <AnimatePresence>
                 {isInitializing && (
@@ -339,7 +372,7 @@ function InterviewPage() {
                             <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Signal Integrity</span>
                             <span className="text-[10px] font-mono text-cyan-500">99.8% Optimized</span>
                         </div>
-                        <button onClick={handleEndInterview} className="px-8 py-3 bg-red-500/10 text-red-500 rounded-full text-[10px] font-black tracking-[0.2em] border border-red-500/20 uppercase transition-all hover:bg-red-500 hover:text-white">End Session</button>
+                        <button onClick={() => handleEndInterview(false)} className="px-8 py-3 bg-red-500/10 text-red-500 rounded-full text-[10px] font-black tracking-[0.2em] border border-red-500/20 uppercase transition-all hover:bg-red-500 hover:text-white">Early Finish & Report</button>
                     </div>
                 </header>
 
@@ -349,7 +382,7 @@ function InterviewPage() {
                         <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent opacity-30 pointer-events-none" />
 
                         <div className={`w-56 h-56 md:w-72 md:h-72 rounded-full flex items-center justify-center glass-panel border-white/10 ${isAISpeaking ? 'border-cyan-500/30' : ''} relative shadow-2xl`}>
-                            {isListening && (
+                            {isListening && !isTerminalOpen && (
                                 <div className="absolute inset-[-25px] rounded-full border border-cyan-500/10 flex items-center justify-center gap-1.5">
                                     {[...Array(16)].map((_, i) => (
                                         <div key={i} className="w-1.5 bg-cyan-500 opacity-30 rounded-full" style={{ height: `${Math.max(6, volume * (1.5 + Math.random() * 2))}px`, transition: 'height 0.15s ease' }} />
@@ -365,11 +398,12 @@ function InterviewPage() {
                                     endSessionStage === 'finalizing' ? 'Finalizing Performance Report...' :
                                         isProcessing ? 'Processing Neural Signal...' :
                                             isAISpeaking ? 'Incoming AI Audio' :
-                                                isListening ? 'Capturing Voice Input' :
-                                                    'Signal Synchronized'}
+                                                isTerminalOpen ? 'WAITING FOR CODE UPLOAD' :
+                                                    isListening ? 'Capturing Voice Input' :
+                                                        'Signal Synchronized'}
                             </span>
                             <AnimatePresence>
-                                {isListening && interimTranscript && (
+                                {isListening && interimTranscript && !isTerminalOpen && (
                                     <motion.div
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
@@ -393,8 +427,8 @@ function InterviewPage() {
                             ) : (
                                 <button
                                     onClick={manualToggleMic}
-                                    disabled={isProcessing || isAISpeaking}
-                                    className={`w-24 h-24 rounded-full flex flex-col items-center justify-center transition-all duration-500 ${isListening ? 'bg-red-500' : 'bg-white text-slate-950'} ${(isProcessing || isAISpeaking) ? 'opacity-20 cursor-not-allowed' : 'hover:scale-110 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.15)]'}`}
+                                    disabled={isProcessing || isAISpeaking || isTerminalOpen}
+                                    className={`w-24 h-24 rounded-full flex flex-col items-center justify-center transition-all duration-500 ${isListening ? 'bg-red-500' : 'bg-white text-slate-950'} ${(isProcessing || isAISpeaking || isTerminalOpen) ? 'opacity-20 cursor-not-allowed' : 'hover:scale-110 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.15)]'}`}
                                 >
                                     {isListening ? (
                                         <div className="w-8 h-8 bg-white rounded-md animate-pulse" />
@@ -456,6 +490,13 @@ function InterviewPage() {
                 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
                 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
             `}} />
+
+            <CodeTerminal
+                isOpen={isTerminalOpen}
+                onClose={() => setIsTerminalOpen(false)}
+                problemStatement={currentQuestion}
+                onCodeSubmit={handleCodeSubmit}
+            />
         </div >
     );
 }

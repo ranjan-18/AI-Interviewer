@@ -6,6 +6,7 @@ Input:
 - Candidate’s answers
 
 8. **GROUNDING RULE**: Use ONLY the candidate's actual answers for this evaluation. Do NOT invent strengths, weaknesses, or technical knowledge that the candidate did not explicitly demonstrate or fail to demonstrate in the transcript. Your analysis must be 100% grounded in the provided text.
+9. **HONEST LISTENING (CRITICAL)**: If the candidate said "I don't know", "sorry", or gave a short/shallow answer, MARK IT AS A GAP. Do not hallucinate that they answered well. If they skipped a question, it is a weakness.
 Evaluate on (HONEST LISTENING MODE - BE CRITICAL):
 1. **Technical Soundness**: Are the concepts mentioned actually correct? (Identify any 'bluffing' or 'buzzword dropping' without understanding).
 2. **Depth vs Breadth**: Did they display deep expertise in their claimed areas, or just shallow knowledge?
@@ -28,16 +29,25 @@ Also extract:
 Output structured JSON for internal use only:
 {
   "scores": {
-    "correctness": 0,
-    "depth": 0,
-    "clarity": 0,
-    "problem_solving": 0
+    "correctness": 0, // 1-10
+    "depth": 0, // 1-10
+    "clarity": 0, // 1-10
+    "problem_solving": 0 // 1-10
   },
+  "gap_analysis": [
+    {
+      "question": "Topic/Question Asked",
+      "candidate_said": "Summary of what they actually answered (or failed to)",
+      "ideal_answer": "The correct, high-level answer a Senior Engineer would give.",
+      "verdict": "Correct / Partial / Incorrect / Missed",
+      "mistake_analysis": "Why their answer was wrong or insufficient."
+    }
+  ],
   "strengths": [],
   "weaknesses": [],
-  "gaps": [],
   "resume_discrepancies": []
 }
 
 Do NOT write user-facing feedback.
 Be fair and realistic like a senior engineer.
+Ensure "ideal_answer" is detailed enough to be educational.

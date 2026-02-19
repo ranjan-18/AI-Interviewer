@@ -1,5 +1,5 @@
 from ..services.llm_client import LLMClient
-from ..utils.prompt_loader import INTERVIEWER_PROMPT
+from ..utils.prompt_loader import INTERVIEWER_PROMPT, HR_INTERVIEWER_PROMPT
 
 class InterviewerAgent:
     def __init__(self):
@@ -16,6 +16,48 @@ class InterviewerAgent:
         **kwargs
     ) -> str:
         
+        if stage == "break_stage":
+            # Simple prompt to mediate the break choice
+            prompt = f"""
+            # CONTEXT
+            Current Stage: Intermission / Break
+            Candidate's Last Answer: {last_answer}
+            
+            # INSTRUCTION
+            {followup_instruction}
+            
+            # RULE
+            - If the candidate says "break", just say "Sure, take your time." and wait.
+            - If instruction says asking for break choice, ask EXACTLY: "Great job completing the technical rounds. Before we move to the HR round, would you like to take a short break or continue right away?"
+            - If instruction says "The candidate is ready", say "Excellent. Let's begin the HR and Behavioral round." and then ask the first question: "Tell me about a significant challenge you faced in your work."
+            """
+            return await self.llm_client.generate_completion(prompt, "You are a helpful interviewer.")
+            
+        if stage == "hr_round":
+            prompt_template = HR_INTERVIEWER_PROMPT
+            hr_step = kwargs.get('item_step', 1) # Will be calculated by orchestrator
+            
+            prompt = f"""
+            # CONTEXT
+            Current Stage: HR & Behavioral Round
+            Question Number: {hr_step}
+            Resume Context: {resume_context[:3000]}
+            
+            # CONVERSATION STATE
+            Previous History:
+            {conversation_history}
+            
+            Candidate's Last Answer: {last_answer}
+            
+            # INSTRUCTION FOR THIS TURN
+            {followup_instruction}
+            
+            # EXECUTION
+            Based on the above, ask the next HR question. Be professional and encouraging.
+            """
+            
+            return await self.llm_client.generate_completion(prompt, prompt_template)
+            
         item_step = kwargs.get('item_step', 1)
         total_steps = kwargs.get('total_item_questions', 2)
         

@@ -7,10 +7,13 @@ class HREvaluatorAgent:
 
     async def evaluate(self, hr_transcript: str) -> dict:
         prompt = f"""
-        HR Round Transcript:
-        {hr_transcript}
+        Interview Transcript (HR or Combined):
+        {hr_transcript[:8000]}
         
-        Evaluate the candidate on soft skills and culture fit based on the SYSTEM PROMPT criteria.
-        Return structured JSON with scores and feedback.
+        Evaluate Soft Skills & Culture Fit.
+        
+        IMPORTANT: This might be a partial interview or only contain the Technical portion if the candidate quit early.
+        - If NO HR questions were asked, evaluate Communication Style, Confidence, and Clarity based on their technical explanations.
+        - Explicitly state "Limited Data - Early Termination" if applicable.
         """
         return await self.llm_client.generate_json(prompt, HR_EVALUATOR_PROMPT)
