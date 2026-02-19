@@ -7,7 +7,8 @@ from .routes import resume as resume_route, interview as interview_route, feedba
 
 Base.metadata.create_all(bind=engine)
 
-ROOT_PATH = os.getenv("ROOT_PATH", "")
+# If running on Vercel, default root_path to /api to match rewrites
+ROOT_PATH = os.getenv("ROOT_PATH", "/api" if os.getenv("VERCEL") else "")
 
 app = FastAPI(title="AI Interview Buddy API", version="1.0.0", debug=True, root_path=ROOT_PATH)
 

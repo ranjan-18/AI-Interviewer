@@ -30,7 +30,9 @@ function UploadResumePage() {
                 navigate(`/interview/${result.resume_id}`);
             }, 2500);
         } catch (err) {
-            setError('Failed to upload resume. Please try again.');
+            console.error("Resume upload failed:", err);
+            const detail = err.response?.data?.detail || "Please try again.";
+            setError(`Failed to upload resume: ${detail}`);
             setUploading(false);
         }
     };
