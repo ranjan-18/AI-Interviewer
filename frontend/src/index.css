@@ -1,0 +1,187 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #4F46E5;
+  --color-secondary: #ec4899;
+  --color-background: #020617;
+  --font-plus: "Plus Jakarta Sans", sans-serif;
+  --font-outfit: "Outfit", sans-serif;
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-delayed: float 6s ease-in-out infinite 2s;
+  --animate-pulse-glow: pulse-glow 3s ease-in-out infinite;
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0) rotate(0);
+    }
+
+    33% {
+      transform: translateY(-10px) rotate(1deg);
+    }
+
+    66% {
+      transform: translateY(-5px) rotate(-1deg);
+    }
+  }
+
+  @keyframes orbit {
+    from {
+      transform: rotate(0deg) translateX(80px) rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg) translateX(80px) rotate(-360deg);
+    }
+  }
+
+  @keyframes dash {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes pulseThin {
+
+    0%,
+    100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes pulse-glow {
+
+    0%,
+    100% {
+      opacity: 0.5;
+      filter: blur(40px);
+    }
+
+    50% {
+      opacity: 0.8;
+      filter: blur(60px);
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+
+:root {
+  --background: #020617;
+  --foreground: #f8fafc;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Outfit', sans-serif;
+  @apply antialiased selection:bg-blue-500/30;
+}
+
+.dots-pattern {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+.glass-panel {
+  @apply bg-slate-900/40 backdrop-blur-2xl border border-white/10 shadow-2xl;
+}
+
+.glass-card {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 transition-all duration-500 hover:bg-white/10 hover:border-white/20;
+}
+
+.neural-line {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: dash 5s linear infinite;
+}
+
+.btn-primary {
+  @apply px-10 py-4 text-white rounded-full font-bold text-lg transition-all active:scale-95;
+  background: linear-gradient(to right, #4477FF, #3355CC);
+  box-shadow: 0 4px 25px rgba(68, 119, 255, 0.4);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 4px 40px rgba(68, 119, 255, 0.6);
+  transform: scale(1.05);
+}
+
+.btn-secondary {
+  @apply px-10 py-4 bg-transparent border border-white/20 text-white rounded-full font-bold text-lg transition-all active:scale-95;
+}
+
+.btn-secondary:hover {
+  @apply bg-white/5;
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #5588FF, #33CCFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-line {
+  @apply absolute bottom-0 left-0 right-0 h-[1px];
+  background: linear-gradient(to right, transparent, rgba(6, 182, 212, 0.4), transparent);
+}
+
+.glow-orb {
+  @apply absolute rounded-full opacity-40 animate-pulse;
+  filter: blur(140px);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mesh-gradient {
+  background:
+    radial-gradient(at 0% 0%, hsla(190, 100%, 50%, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(220, 100%, 50%, 0.15) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, hsla(280, 100%, 50%, 0.1) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, hsla(200, 100%, 50%, 0.05) 0px, transparent 50%);
+}
+
+.fade-in {
+  animation: fadeIn 1s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

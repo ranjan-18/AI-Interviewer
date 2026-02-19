@@ -1,0 +1,28 @@
+# General
+.env
+.DS_Store
+*.log
+__pycache__/
+*.py[cod]
+
+# Dependencies
+node_modules/
+backend/venv/
+backend/.venv/
+
+# Build
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# Application Specific
+uploads/
+audio_output/
+data/
+backend.log
+backend_error.log
+backend_new.log
+backend_new2.log

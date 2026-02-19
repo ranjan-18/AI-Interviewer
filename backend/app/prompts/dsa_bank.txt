@@ -1,0 +1,18 @@
+
+📚 ✅ DSA QUESTION BANK (Curated)
+
+🟢 Easy Level
+Arrays / Strings: Two Sum, Move Zeroes, Reverse a String, Check if String is Palindrome, Find Maximum and Minimum in Array, Remove Duplicates from Sorted Array, Find Second Largest Element, Rotate Array by K Steps, Check Anagram Strings, Count Frequency of Characters.
+Searching / Basics: Binary Search, Linear Search, Find First and Last Occurrence in Sorted Array.
+Stack / Queue (Basic): Valid Parentheses, Implement Stack using Array, Implement Queue using Array.
+
+🟡 Medium Level
+Arrays / Hashing: Maximum Subarray Sum (Kadane’s Algorithm), Subarray Sum Equals K, Majority Element, Sort Colors (0,1,2), Find Duplicate Number, Longest Substring Without Repeating Characters.
+Linked List: Reverse a Linked List, Detect Cycle in Linked List, Find Middle of Linked List, Merge Two Sorted Linked Lists, Remove Nth Node from End.
+Stack / Queue: Next Greater Element, Min Stack, Evaluate Reverse Polish Notation.
+Recursion / Backtracking (Basic): Generate All Subsets, Generate All Permutations, Print All Subsequences of a String.
+Trees (Basic): Inorder Traversal of Binary Tree, Level Order Traversal, Height of Binary Tree, Check if Two Trees are Same, Check if Tree is Balanced.
+
+🔴 Medium–Hard (Optional for Strong Candidates)
+Arrays / DP: Longest Increasing Subsequence, Best Time to Buy and Sell Stock, Coin Change (Basic DP).
+Trees / Graphs (Intro): Lowest Common Ancestor in Binary Tree, Diameter of Binary Tree, BFS of Graph, DFS of Graph.
