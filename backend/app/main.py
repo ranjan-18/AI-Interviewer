@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
@@ -6,7 +7,9 @@ from .routes import resume as resume_route, interview as interview_route, feedba
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="AI Interview Buddy API", version="1.0.0", debug=True)
+ROOT_PATH = os.getenv("ROOT_PATH", "")
+
+app = FastAPI(title="AI Interview Buddy API", version="1.0.0", debug=True, root_path=ROOT_PATH)
 
 app.add_middleware(
     CORSMiddleware,
