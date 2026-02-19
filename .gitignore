@@ -26,3 +26,5 @@ backend.log
 backend_error.log
 backend_new.log
 backend_new2.log
+.vercel
+.env*.local

@@ -19,9 +19,10 @@ async def upload_resume(
     db: Session = Depends(get_db)
 ):
     try:
-        # Ensure upload directory exists
-        os.makedirs("./uploads", exist_ok=True)
-        file_path = f"./uploads/{file.filename}"
+        # Use /tmp for serverless environments (Vercel)
+        upload_dir = "/tmp/uploads"
+        os.makedirs(upload_dir, exist_ok=True)
+        file_path = os.path.join(upload_dir, file.filename)
         
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
