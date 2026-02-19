@@ -37,8 +37,8 @@ class AgentOrchestrator:
         exp_count = sum(1 for i in (items or []) if "company" in i)
         proj_count = sum(1 for i in (items or []) if "company" not in i)
         
-        # 3 questions for Exp, 4 for Projects
-        resume_stage_end = (exp_count * 3) + (proj_count * 4) + 1 # +1 for intro answer
+        # 2 questions for Exp, 4 for Projects
+        resume_stage_end = (exp_count * 2) + (proj_count * 4) + 1 # +1 for intro answer
         
         # DSA Stage: usually 2 questions
         dsa_stage_end = resume_stage_end + 2
@@ -91,7 +91,7 @@ class AgentOrchestrator:
             found = False
             for idx, item in enumerate(items):
                 is_exp = "company" in item
-                limit = 3 if is_exp else 4
+                limit = 2 if is_exp else 4
                 if running_step <= current_step < (running_step + limit):
                     current_item = item
                     item_step = (current_step - running_step) + 1
@@ -111,7 +111,7 @@ class AgentOrchestrator:
             if items and len(items) > 0:
                 current_item = items[0]
                 is_exp = "company" in current_item
-                total_item_questions = 3 if is_exp else 4
+                total_item_questions = 2 if is_exp else 4
                 item_type = "Experience" if is_exp else "Project"
                 current_item_str = f"{item_type} 1: {json.dumps(current_item)}"
                 answer_analysis = f"Acknowledge the introduction BRIEFLY and transition IMMEDIATELY to the FIRST {item_type} item from the resume. No generic intro follow-ups."
@@ -124,7 +124,7 @@ class AgentOrchestrator:
             # Recalculate DSA start
             exp_count = sum(1 for i in (items or []) if "company" in i)
             proj_count = sum(1 for i in (items or []) if "company" not in i)
-            resume_stage_end = (exp_count * 3) + (proj_count * 4) + 1
+            resume_stage_end = (exp_count * 2) + (proj_count * 4) + 1
             dsa_step = current_step - resume_stage_end + 1
             
             if dsa_step == 1:
