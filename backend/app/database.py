@@ -17,12 +17,21 @@ if SQLALCHEMY_DATABASE_URL and "postgres" in SQLALCHEMY_DATABASE_URL:
     if SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
         SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql+pg8000://", 1)
     elif SQLALCHEMY_DATABASE_URL.startswith("postgresql://"):
-        SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgresql://", "postgresql+pg8000://", 1)
+        if "+pg8000" not in SQLALCHEMY_DATABASE_URL:
+             SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgresql://", "postgresql+pg8000://", 1)
 
 # Ensure data directory exists only for SQLite
 if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
-    if not os.path.exists("./data"):
-        os.makedirs("./data")
+    try:
+        # Check if we can write to ./data
+        data_dir = "./data"
+        if not os.path.exists(data_dir):
+            os.makedirs(data_dir, exist_ok=True)
+    except OSError:
+        # If read-only (Vercel), switch to /tmp
+        print("Detected read-only filesystem. Switching SQLite to /tmp.")
+        SQLALCHEMY_DATABASE_URL = "sqlite:////tmp/sql_app.db"
+    
     connect_args = {"check_same_thread": False}
 else:
     connect_args = {}
