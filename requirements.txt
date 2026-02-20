@@ -5,14 +5,9 @@ pydantic
 python-multipart
 python-dotenv
 openai
-scipy
-soundfile
 requests
 aiofiles
 tenacity
-passlib
-numpy
-pandas
 psycopg2-binary
 pg8000
 pytest
