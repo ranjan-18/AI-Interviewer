@@ -1,9 +1,12 @@
+import sys
 import os
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from .database import engine, Base
-from .models import user, resume, interview, question, feedback
-from .routes import resume as resume_route, interview as interview_route, feedback as feedback_route, voice as voice_route
+
+# Add project root to sys.path to allow absolute imports
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+from backend.app.database import engine, Base
+from backend.app.models import user, resume, interview, question, feedback
+from backend.app.routes import resume as resume_route, interview as interview_route, feedback as feedback_route, voice as voice_route
 
 Base.metadata.create_all(bind=engine)
 
