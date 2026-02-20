@@ -19,24 +19,32 @@ async def upload_resume(
     db: Session = Depends(get_db)
 ):
     try:
-        # Use /tmp for serverless environments (Vercel)
-        upload_dir = "/tmp/uploads"
-        os.makedirs(upload_dir, exist_ok=True)
-        file_path = os.path.join(upload_dir, file.filename)
-        
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-
-        # Parse resume
+        # 1. Parse content directly from memory first (Reliable for Vercel)
+        content = await file.read()
         try:
-            parsed_text = resume_parser.parse_pdf(file_path)
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Failed to parse resume: {e}")
+            parsed_text = resume_parser.parse_pdf(content)
+            print(f"Successfully parsed PDF. Length: {len(parsed_text)} chars")
+        except Exception as parse_error:
+             print(f"PDF Parse Error: {parse_error}")
+             raise HTTPException(status_code=400, detail=f"PDF Parsing Failed: {str(parse_error)}")
 
-        # Analyze resume using orchestrator/LLM
+        if not parsed_text.strip():
+             raise HTTPException(status_code=400, detail="Could not extract text from PDF. Ensure it is a valid text PDF, not an image.")
+
+        # 2. Try to save to tmp (Optional for Vercel, mainly for DB record)
+        file_path = f"/tmp/{file.filename}"
+        try:
+            os.makedirs("/tmp", exist_ok=True)
+            with open(file_path, "wb") as f:
+                f.write(content)
+        except Exception as save_error:
+            print(f"Warning: Could not save file to {file_path}: {save_error}")
+            file_path = "memory_upload" # Fallback so DB insert doesn't fail
+
+        # 3. Analyze resume using orchestrator/LLM
         analysis = await orchestrator.analyze_resume(parsed_text)
         
-        # Save to database
+        # 4. Save to database
         db_resume = resume_model.Resume(
             user_id=user_id,
             file_path=file_path,
@@ -51,7 +59,8 @@ async def upload_resume(
         db.refresh(db_resume)
 
         return {"message": "Resume uploaded successfully", "resume_id": db_resume.id, "analysis": analysis}
+    except HTTPException as he:
+        raise he
     except Exception as e:
-        # Log to file for production debugging if needed, or rely on FastAPI logging
         print(f"Error processing resume upload: {e}")
         raise HTTPException(status_code=500, detail=str(e))
