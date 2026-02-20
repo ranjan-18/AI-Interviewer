@@ -31,8 +31,18 @@ function UploadResumePage() {
             }, 2500);
         } catch (err) {
             console.error("Resume upload failed:", err);
-            const detail = err.response?.data?.detail || "Please try again.";
-            setError(`Failed to upload resume: ${detail}`);
+            let detail = "Please try again.";
+            if (err.response) {
+                // Server responded with a status code outside 2xx range
+                detail = err.response.data?.detail || JSON.stringify(err.response.data) || `Status: ${err.response.status}`;
+            } else if (err.request) {
+                // Request was made but no response received
+                detail = "No response from server. Check connection.";
+            } else {
+                // Something happened in setting up the request
+                detail = err.message;
+            }
+            setError(`Upload Failed: ${detail}`);
             setUploading(false);
         }
     };
