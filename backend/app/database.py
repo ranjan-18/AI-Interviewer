@@ -5,16 +5,19 @@ import os
 from .core.settings import settings
 
 # Determine Database URL
-# 1. Prefer POSTGRES_URL from Vercel environment (set automatically by Vercel Postgres)
+# 1. Prefer POSTGRES_URL from Vercel environment
 # 2. Fallback to settings.DATABASE_URL (local .env or default)
 SQLALCHEMY_DATABASE_URL = os.getenv("POSTGRES_URL")
 
 if not SQLALCHEMY_DATABASE_URL:
     SQLALCHEMY_DATABASE_URL = str(settings.DATABASE_URL)
 
-# Fix protocol for SQLAlchemy (postgres:// -> postgresql://)
-if SQLALCHEMY_DATABASE_URL and SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
-    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
+# Fix protocol for SQLAlchemy and use pg8000 driver for Vercel reliability
+if SQLALCHEMY_DATABASE_URL and "postgres" in SQLALCHEMY_DATABASE_URL:
+    if SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
+        SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql+pg8000://", 1)
+    elif SQLALCHEMY_DATABASE_URL.startswith("postgresql://"):
+        SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgresql://", "postgresql+pg8000://", 1)
 
 # Ensure data directory exists only for SQLite
 if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):

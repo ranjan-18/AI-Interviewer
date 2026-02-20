@@ -14,6 +14,7 @@ passlib
 numpy
 pandas
 psycopg2-binary
+pg8000
 pytest
 httpx
 PyPDF2
