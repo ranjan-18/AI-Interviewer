@@ -138,7 +138,7 @@ const UploadResumePage = () => {
                             <span>Analyzing Profile...</span>
                         </span>
                     ) : (
-                        "Start AI Interview"
+                        "START INTERVIEW (V2 UPDATED)"
                     )}
                 </motion.button>
             </motion.div>
