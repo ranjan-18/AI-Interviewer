@@ -13,7 +13,10 @@
     "builds": [
         {
             "src": "backend/app/main.py",
-            "use": "@vercel/python"
+            "use": "@vercel/python",
+            "config": {
+                "includeFiles": "backend/app/prompts/**"
+            }
         },
         {
             "src": "frontend/package.json",
