@@ -8,7 +8,6 @@ openai
 requests
 aiofiles
 tenacity
-psycopg2-binary
 pg8000
 pytest
 httpx
