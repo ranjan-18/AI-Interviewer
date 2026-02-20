@@ -1,0 +1,53 @@
+
+> frontend@0.0.0 build
+> vite build
+
+[36mvite v4.5.5 [32mbuilding for production...[36m[39m
+transforming...
+[32m???[39m 31 modules transformed.
+[32m??? built in 1.26s[39m
+npm : [31mCould not 
+resolve "../components/CodeT
+erminal" from "src/pages/Int
+erviewPage.jsx"[39m
+At line:1 char:1
++ npm run build 2>&1 | 
+Out-File -Encoding ascii 
+build_log.txt
++ ~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          
+    : NotSpecified: ([31m  
+  Could not ...wPage.jsx"   
+ [39m:String) [], Remot    
+eException
+    + FullyQualifiedErrorId 
+    : NativeCommandError
+ 
+file: [36mC:/Users/navee/On
+eDrive/Desktop/AI Interview 
+Buddy/frontend/src/pages/Int
+erviewPage.jsx[39m
+[31merror during build:
+RollupError: Could not 
+resolve "../components/CodeT
+erminal" from "src/pages/Int
+erviewPage.jsx"
+    at error (file:///C:/Use
+rs/navee/OneDrive/Desktop/AI
+%20Interview%20Buddy/fronten
+d/node_modules/rollup/dist/e
+s/shared/node-entry.js:2287:
+30)
+    at ModuleLoader.handleIn
+validResolvedId (file:///C:/
+Users/navee/OneDrive/Desktop
+/AI%20Interview%20Buddy/fron
+tend/node_modules/rollup/dis
+t/es/shared/node-entry.js:24
+860:24)
+    at file:///C:/Users/nave
+e/OneDrive/Desktop/AI%20Inte
+rview%20Buddy/frontend/node_
+modules/rollup/dist/es/share
+d/node-entry.js:24822:26[39
+m
