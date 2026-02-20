@@ -17,13 +17,6 @@
             "config": {
                 "includeFiles": "backend/app/prompts/**"
             }
-        },
-        {
-            "src": "frontend/package.json",
-            "use": "@vercel/static-build",
-            "config": {
-                "distDir": "dist"
-            }
         }
     ]
 }
