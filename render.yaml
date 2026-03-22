@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: ai-interviewer-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: GITHUB_MODELS_API_KEY
+        sync: false
