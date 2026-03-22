@@ -1,7 +1,8 @@
-# Environment files
-.env
+# Environment files (backend secrets - never commit!)
+backend/.env
 .env*.local
 .env.production
+# Note: frontend/.env is allowed as it only contains the public Render URL
 
 # Node modules (never commit these!)
 node_modules/
