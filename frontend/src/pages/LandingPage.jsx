@@ -280,10 +280,10 @@ function LandingPage() {
 
                                 <div className="flex items-center gap-6 p-2 pr-8 rounded-full bg-slate-900 border border-white/5 w-fit">
                                     <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-400 flex items-center justify-center text-2xl shadow-lg border border-white/10 font-bold text-white">
-                                        NY
+                                        RK
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-xl text-white">Naveen Kumar Yadav</h4>
+                                        <h4 className="font-bold text-xl text-white">Ranjan Kumar</h4>
                                         <p className="text-slate-500 font-medium">Developer & Founder</p>
                                     </div>
                                 </div>
@@ -302,7 +302,7 @@ function LandingPage() {
                         </div>
                     </div>
                     <div className="text-slate-400 font-medium">
-                        Developed with ❤️ by <span className="text-white">Naveen Kumar Yadav</span>
+                        Developed with ❤️ by <span className="text-white">Ranjan Kumar</span>
                     </div>
                     <div className="mt-8 text-slate-600 text-xs">
                         © 2026 AI Interview Buddy. All rights reserved.
